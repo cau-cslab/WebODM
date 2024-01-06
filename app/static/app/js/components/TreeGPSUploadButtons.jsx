@@ -1,4 +1,5 @@
 import React from 'react';
+import * as utm from 'utm';
 import '../css/TreeGPSUploadButtons.scss';
 import PropTypes from 'prop-types';
 import { _ } from '../classes/gettext';
@@ -11,7 +12,6 @@ class TreeGPSUploadButtons extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { jsonData: null };
         this.fileInputRef = React.createRef();
     }
 
@@ -23,10 +23,9 @@ class TreeGPSUploadButtons extends React.Component {
         reader.onload = (e) => {
             const text = e.target.result;
             try {
-                const json = JSON.parse(text);
-                this.setState({ jsonData: json });
-                const { view } = Potree.saveProject(window.viewer);
-                console.log(view);
+                const gpsData = JSON.parse(text);
+                const utmPoints = this.gpsToUtm(gpsData);
+                this.addPointsOnPointCloud(utmPoints);
             } catch (error) {
                 console.error("Error parsing JSON:", error);
             }
@@ -36,8 +35,20 @@ class TreeGPSUploadButtons extends React.Component {
 
     handleButtonClick = () => {
         this.fileInputRef.current.click();
-        this.addPoints([[319418.0, 4152690.0, 68.0]])
     };
+
+    gpsToUtm = (gpsData) => {
+        return gpsData.map(point => {
+            const { lat, lon } = point;
+            const utmData = utm.fromLatLon(lat, lon);
+            return {
+                x: utmData.easting,
+                y: utmData.northing
+            };
+        });
+    };
+
+    addPointsOnPointCloud = (utmPoints) => { }
 
     addPoints = (points) => {
         const measure = new Potree.Measure();
