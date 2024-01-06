@@ -67,7 +67,7 @@ class TreeGPSUploadButtons extends React.Component {
         measure.showHeight = false;
         measure.showCircle = false;
         measure.showAzimuth = false;
-        measure.showEdges = true;
+        measure.showEdges = false;
 
         for (const point of points) {
             measure.addMarker(point);
