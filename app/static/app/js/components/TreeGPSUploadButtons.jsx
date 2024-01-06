@@ -4,10 +4,6 @@ import PropTypes from 'prop-types';
 import { _ } from '../classes/gettext';
 
 class TreeGPSUploadButtons extends React.Component {
-    static defaultProps = {
-        buttonClass: "btn-primary",
-    };
-
     static propTypes = {
         buttonClass: PropTypes.string,
     };
@@ -29,6 +25,8 @@ class TreeGPSUploadButtons extends React.Component {
             try {
                 const json = JSON.parse(text);
                 this.setState({ jsonData: json });
+                const { view } = Potree.saveProject(window.viewer);
+                console.log(view);
             } catch (error) {
                 console.error("Error parsing JSON:", error);
             }
