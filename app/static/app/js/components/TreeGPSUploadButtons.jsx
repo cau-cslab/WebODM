@@ -57,30 +57,6 @@ class TreeGPSUploadButtons extends React.Component {
                     <span className="caret"></span>
                 </button> : ""}
             <ul className="dropdown-menu">
-                {assetDownloads.map((asset, i) => {
-                    if (asset.separator) {
-                        return (<li key={i} className="divider"></li>);
-                    } else {
-                        let onClick = undefined;
-                        if (asset.exportFormats) {
-                            onClick = e => {
-                                e.preventDefault();
-                                this.setState({
-                                    exportDialogProps: {
-                                        asset: asset.exportId(),
-                                        exportFormats: asset.exportFormats,
-                                        exportParams: asset.exportParams,
-                                        assetLabel: asset.label
-                                    }
-                                });
-                                if (this.props.onModalOpen) this.props.onModalOpen();
-                            }
-                        }
-                        return (<li key={i}>
-                            <a href={asset.downloadUrl(this.props.task.project, this.props.task.id)} onClick={onClick}><i className={asset.icon + " fa-fw"}></i> {asset.label}</a>
-                        </li>);
-                    }
-                })}
             </ul>
         </div>);
     }
