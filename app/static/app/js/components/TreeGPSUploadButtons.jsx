@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/AssetDownloadButtons.scss';
+import '../css/TreeGPSUploadButtons.scss';
 import PropTypes from 'prop-types';
 import ExportAssetDialog from './ExportAssetDialog';
 import { _ } from '../classes/gettext';
