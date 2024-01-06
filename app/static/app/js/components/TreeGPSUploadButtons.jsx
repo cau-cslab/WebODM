@@ -51,7 +51,7 @@ class TreeGPSUploadButtons extends React.Component {
     };
 
     addPointsOnPointCloud = (utmPoints) => {
-        this.addPoints(utmPoints);
+        this.addPoints(utmPoints.map((point => [point.x, point.y, 48])));
     }
 
     addPoints = (points) => {
