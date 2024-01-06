@@ -36,7 +36,30 @@ class TreeGPSUploadButtons extends React.Component {
 
     handleButtonClick = () => {
         this.fileInputRef.current.click();
+        this.addPoints([[319418.0, 4152690.0, 68.0]])
     };
+
+    addPoints = (points) => {
+        const measure = new Potree.Measure();
+
+        measure.uuid = 'data.uuid';
+        measure.name = 'Point';
+        measure.showDistances = false;
+        measure.showCoordinates = true;
+        measure.showArea = false;
+        measure.closed = false;
+        measure.showAngles = false;
+        measure.showHeight = false;
+        measure.showCircle = false;
+        measure.showAzimuth = false;
+        measure.showEdges = true;
+
+        for (const point of points) {
+            measure.addMarker(point);
+        }
+
+        window.viewer.scene.addMeasurement(measure);
+    }
 
     render() {
         return (
