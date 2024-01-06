@@ -691,55 +691,52 @@ class ModelView extends React.Component {
         const { selectedCamera } = this.state;
         const { task } = this.props;
 
-        return (<div className="model-view">
-            <ErrorMessage bind={[this, "error"]} />
-            <div className="container potree_container"
-                style={{ height: "100%", width: "100%", position: "relative" }}
-                onContextMenu={(e) => { e.preventDefault(); }}>
-                <div id="potree_render_area"
-                    ref={(domNode) => { this.container = domNode; }}></div>
-                <div id="potree_sidebar_container"> </div>
-            </div>
+        return (
+            <div className="model-view">
+                <ErrorMessage bind={[this, "error"]} />
+                <div className="container potree_container"
+                    style={{ height: "100%", width: "100%", position: "relative" }}
+                    onContextMenu={(e) => { e.preventDefault(); }}>
+                    <div id="potree_render_area"
+                        ref={(domNode) => { this.container = domNode; }}></div>
+                    <div id="potree_sidebar_container"> </div>
+                </div>
 
-            <div className={"model-action-buttons " + (this.state.modalOpen ? "modal-open" : "")}>
-                <TreeGPSUploadButtons
-                    task={this.props.task}
-                    direction="up"
-                    showLabel={false}
-                    buttonClass="btn-secondary"
-                    onModalOpen={() => this.setState({ modalOpen: true })}
-                    onModalClose={() => this.setState({ modalOpen: false })} />
-                <AssetDownloadButtons
-                    task={this.props.task}
-                    direction="up"
-                    showLabel={false}
-                    buttonClass="btn-secondary"
-                    onModalOpen={() => this.setState({ modalOpen: true })}
-                    onModalClose={() => this.setState({ modalOpen: false })} />
-                {(this.props.shareButtons && !this.props.public) ?
-                    <ShareButton
-                        ref={(ref) => { this.shareButton = ref; }}
+                <div className={"model-action-buttons " + (this.state.modalOpen ? "modal-open" : "")}>
+                    <TreeGPSUploadButtons
+                        buttonClass="btn-secondary" />
+                    <AssetDownloadButtons
                         task={this.props.task}
-                        popupPlacement="top"
-                        linksTarget="3d"
-                    />
-                    : ""}
-                <SwitchModeButton
-                    public={this.props.public}
-                    task={this.props.task}
-                    type="modelToMap" />
+                        direction="up"
+                        showLabel={false}
+                        buttonClass="btn-secondary"
+                        onModalOpen={() => this.setState({ modalOpen: true })}
+                        onModalClose={() => this.setState({ modalOpen: false })} />
+                    {(this.props.shareButtons && !this.props.public) ?
+                        <ShareButton
+                            ref={(ref) => { this.shareButton = ref; }}
+                            task={this.props.task}
+                            popupPlacement="top"
+                            linksTarget="3d"
+                        />
+                        : ""}
+                    <SwitchModeButton
+                        public={this.props.public}
+                        task={this.props.task}
+                        type="modelToMap" />
+                </div>
+
+                {selectedCamera ? <div className="thumbnail">
+                    <a className="close-thumb" href="javascript:void(0)" onClick={this.closeThumb}><i className="fa fa-window-close"></i></a>
+                    <ImagePopup feature={selectedCamera._feat} task={task} />
+                </div> : ""}
+
+                <Standby
+                    message={_("Loading textured model...")}
+                    show={this.state.initializingModel}
+                />
             </div>
-
-            {selectedCamera ? <div className="thumbnail">
-                <a className="close-thumb" href="javascript:void(0)" onClick={this.closeThumb}><i className="fa fa-window-close"></i></a>
-                <ImagePopup feature={selectedCamera._feat} task={task} />
-            </div> : ""}
-
-            <Standby
-                message={_("Loading textured model...")}
-                show={this.state.initializingModel}
-            />
-        </div>);
+        );
     }
 }
 

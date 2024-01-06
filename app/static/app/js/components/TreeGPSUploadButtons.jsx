@@ -1,64 +1,60 @@
 import React from 'react';
 import '../css/TreeGPSUploadButtons.scss';
 import PropTypes from 'prop-types';
-import ExportAssetDialog from './ExportAssetDialog';
 import { _ } from '../classes/gettext';
 
 class TreeGPSUploadButtons extends React.Component {
     static defaultProps = {
-        disabled: false,
-        direction: "down", // or "up",
         buttonClass: "btn-primary",
-        task: null,
-        showLabel: true
     };
 
     static propTypes = {
-        disabled: PropTypes.bool,
-        task: PropTypes.object.isRequired,
-        direction: PropTypes.string,
         buttonClass: PropTypes.string,
-        showLabel: PropTypes.bool,
-        onModalOpen: PropTypes.func,
-        onModalClose: PropTypes.func
     };
 
     constructor(props) {
-        super();
+        super(props);
 
-        this.state = {
-            exportDialogProps: null
-        }
+        this.state = { jsonData: null };
+        this.fileInputRef = React.createRef();
     }
 
-    onHide = () => {
-        this.setState({ exportDialogProps: null });
-        if (this.props.onModalClose) this.props.onModalClose();
-    }
+    handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const text = e.target.result;
+            try {
+                const json = JSON.parse(text);
+                this.setState({ jsonData: json });
+            } catch (error) {
+                console.error("Error parsing JSON:", error);
+            }
+        };
+        reader.readAsText(file);
+    };
+
+    handleButtonClick = () => {
+        this.fileInputRef.current.click();
+    };
 
     render() {
-        return (<div className={"tree-gps-upload-buttons " + (this.props.showLabel ? "btn-group" : "") + " " + (this.props.direction === "up" ? "dropup" : "")}>
-
-            {this.state.exportDialogProps ?
-                <ExportAssetDialog task={this.props.task}
-                    asset={this.state.exportDialogProps.asset}
-                    exportFormats={this.state.exportDialogProps.exportFormats}
-                    exportParams={this.state.exportDialogProps.exportParams}
-                    onHide={this.onHide}
-                    assetLabel={this.state.exportDialogProps.assetLabel}
+        return (
+            <div className="tree-gps-upload-buttons">
+                <input
+                    type="file"
+                    ref={this.fileInputRef}
+                    onChange={this.handleFileUpload}
+                    accept=".json"
+                    style={{ display: 'none' }}
                 />
-                : ""}
-
-            <button type="button" className={"btn btn-sm " + this.props.buttonClass} disabled={this.props.disabled} data-toggle="dropdown">
-                <i className="glyphicon glyphicon-download"></i>{this.props.showLabel ? " " + _("Upload Trees GPS") : ""}
-            </button>
-            {this.props.showLabel ?
-                <button type="button" className={"btn btn-sm dropdown-toggle " + this.props.buttonClass} data-toggle="dropdown" disabled={this.props.disabled}>
-                    <span className="caret"></span>
-                </button> : ""}
-            <ul className="dropdown-menu">
-            </ul>
-        </div>);
+                <button type="button" className={"btn btn-sm " + this.props.buttonClass} onClick={this.handleButtonClick}>
+                    <i className="glyphicon glyphicon-tree-conifer"></i>
+                </button>
+            </div>
+        );
     }
 }
 
