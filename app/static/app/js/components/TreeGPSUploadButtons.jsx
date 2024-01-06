@@ -48,7 +48,9 @@ class TreeGPSUploadButtons extends React.Component {
         });
     };
 
-    addPointsOnPointCloud = (utmPoints) => { }
+    addPointsOnPointCloud = (utmPoints) => {
+        this.addPoints(utmPoints);
+    }
 
     addPoints = (points) => {
         const measure = new Potree.Measure();
