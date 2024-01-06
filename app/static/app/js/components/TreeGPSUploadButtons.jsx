@@ -1,5 +1,7 @@
 import React from 'react';
 import * as utm from 'utm';
+import { v4 as uuidv4 } from 'uuid';
+
 import '../css/TreeGPSUploadButtons.scss';
 import PropTypes from 'prop-types';
 import { _ } from '../classes/gettext';
@@ -55,7 +57,7 @@ class TreeGPSUploadButtons extends React.Component {
     addPoints = (points) => {
         const measure = new Potree.Measure();
 
-        measure.uuid = 'data.uuid';
+        measure.uuid = uuidv4();
         measure.name = 'Point';
         measure.showDistances = false;
         measure.showCoordinates = true;
