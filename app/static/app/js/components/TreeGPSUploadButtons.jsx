@@ -38,7 +38,9 @@ class TreeGPSUploadButtons extends React.Component {
     handleButtonClick = () => {
         // this.fileInputRef.current.click();
 
-        console.log(this.findPointsBoxesContaining({ x: 357469.7, y: 4175482.52, z: -89.01 }));
+        const pointsBoxes = this.findPointsBoxesContaining({ x: 357469.7, y: 4175482.52, z: -89.01 });
+        console.log('pointsBoxes:', pointsBoxes);
+        console.log(this.getPointsInPointsBoxes(pointsBoxes));
     };
 
     gpsToUtm = (gpsData) => {
@@ -81,6 +83,24 @@ class TreeGPSUploadButtons extends React.Component {
             && min.y <= y && y <= max.y
             && min.z <= z && z <= max.z
         );
+    }
+
+    getPointsInPointsBoxes = (pointsBoxes) => {
+        const points = [];
+
+        pointsBoxes.forEach(pointsBox => {
+            const offset = pointsBox.position;
+            const { array, count, itemSize } = pointsBox?.geometry?.attributes?.position;
+            for (let i = 0; i < (count * itemSize); i += itemSize) {
+                points.push({
+                    x: array[i] + offset.x,
+                    y: array[i + 1] + offset.y,
+                    z: array[i + 2] + offset.z
+                });
+            }
+        });
+
+        return points;
     }
 
     addPointsOnPointCloud = (utmPoints) => {
