@@ -36,7 +36,9 @@ class TreeGPSUploadButtons extends React.Component {
     };
 
     handleButtonClick = () => {
-        this.fileInputRef.current.click();
+        // this.fileInputRef.current.click();
+
+        console.log(this.findPointsBoxesContaining({ x: 357469.7, y: 4175482.52, z: -89.01 }));
     };
 
     gpsToUtm = (gpsData) => {
@@ -49,6 +51,37 @@ class TreeGPSUploadButtons extends React.Component {
             };
         });
     };
+
+    findPointsBoxesContaining = (point) => {
+        const boxes = [];
+
+        const queue = [viewer.scene.pointclouds[0].children[0]];
+        while (queue.length > 0) {
+            const pointsBox = queue.pop();
+
+            if (!this.isThisPointsBoxContaining(pointsBox, point))  // not containing
+                continue;
+
+            if (pointsBox.children.length) {  // not a leaf node
+                queue.push(...pointsBox.children);
+                continue;
+            }
+
+            boxes.push(pointsBox);  // this box contains the point and leaf node
+        }
+
+        return boxes;
+    }
+
+    isThisPointsBoxContaining = (pointsBox, point) => {
+        const { min, max } = pointsBox.geometry.boundingBox;
+        const { x, y, z } = point;
+        return (
+            min.x <= x && x <= max.x
+            && min.y <= y && y <= max.y
+            && min.z <= z && z <= max.z
+        );
+    }
 
     addPointsOnPointCloud = (utmPoints) => {
         this.addPoints(utmPoints.map((point => [point.x, point.y, 48])));
