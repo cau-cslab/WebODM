@@ -38,13 +38,7 @@ class TreeGPSUploadButtons extends React.Component {
     handleButtonClick = () => {
         // this.fileInputRef.current.click();
 
-        const pointsBoxes = this.findPointsBoxesContaining({ x: 357469.7, y: 4175482.52, z: -89.01 });
-        console.log('pointsBoxes:', pointsBoxes);
-
-        const points = this.getPointsInPointsBoxes(pointsBoxes);
-        console.log('points:', points);
-
-        const closestPoint = this.getClosestPoint(points, { x: 357469.7, y: 4175482.52, z: -89.01 });
+        const closestPoint = this.getClosestPoint({ x: 357469.7, y: 4175482.52, z: -89.01 });
         console.log('closestPoint:', closestPoint);
         this.addPoint(closestPoint);
     };
@@ -59,6 +53,15 @@ class TreeGPSUploadButtons extends React.Component {
             };
         });
     };
+
+    getClosestPoint = (targetPoint) => {  // targetPoint: { x: x, y: y, z: z }
+        const pointsBoxes = this.findPointsBoxesContaining(targetPoint);
+        const points = this.getPointsInPointsBoxes(pointsBoxes);
+        const distances = points.map(point => this.getDistance(point, targetPoint));
+        const minDistance = Math.min(...distances);
+        const index = distances.indexOf(minDistance);
+        return points[index];
+    }
 
     findPointsBoxesContaining = (point) => {
         const boxes = [];
@@ -107,13 +110,6 @@ class TreeGPSUploadButtons extends React.Component {
         });
 
         return points;
-    }
-
-    getClosestPoint = (points, targetPoint) => {
-        const distances = points.map(point => this.getDistance(point, targetPoint));
-        const minDistance = Math.min(...distances);
-        const index = distances.indexOf(minDistance);
-        return points[index];
     }
 
     getDistance = (point1, point2) => {
