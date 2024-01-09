@@ -54,7 +54,7 @@ class TreeGPSUploadButtons extends React.Component {
         });
     };
 
-    getClosestPoint = (targetPoint) => {  // targetPoint: { x: x, y: y, z: z }
+    getClosestPoint = (targetPoint) => {  // targetPoint: { x: x, y: y }
         const pointsBoxes = this.findPointsBoxesContaining(targetPoint);
         const points = this.getPointsInPointsBoxes(pointsBoxes);
         const distances = points.map(point => this.getDistance(point, targetPoint));
@@ -86,11 +86,10 @@ class TreeGPSUploadButtons extends React.Component {
 
     isThisPointsBoxContaining = (pointsBox, point) => {
         const { min, max } = pointsBox.geometry.boundingBox;
-        const { x, y, z } = point;
+        const { x, y } = point;
         return (
             min.x <= x && x <= max.x
             && min.y <= y && y <= max.y
-            && min.z <= z && z <= max.z
         );
     }
 
@@ -113,9 +112,9 @@ class TreeGPSUploadButtons extends React.Component {
     }
 
     getDistance = (point1, point2) => {
-        const { x: x1, y: y1, z: z1 } = point1;
-        const { x: x2, y: y2, z: z2 } = point2;
-        return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2);
+        const { x: x1, y: y1 } = point1;
+        const { x: x2, y: y2 } = point2;
+        return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
     }
 
     addPointsOnPointCloud = (utmPoints) => {
