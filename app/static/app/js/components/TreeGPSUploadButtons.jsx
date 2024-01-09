@@ -27,7 +27,8 @@ class TreeGPSUploadButtons extends React.Component {
             try {
                 const gpsData = JSON.parse(text);
                 const utmPoints = this.gpsToUtm(gpsData);
-                this.addPointsOnPointCloud(utmPoints);
+                const closestPoints = utmPoints.map(point => this.getClosestPoint(point));
+                this.addPoints(closestPoints);
             } catch (error) {
                 console.error("Error parsing JSON:", error);
             }
@@ -36,11 +37,11 @@ class TreeGPSUploadButtons extends React.Component {
     };
 
     handleButtonClick = () => {
-        // this.fileInputRef.current.click();
+        this.fileInputRef.current.click();
 
-        const closestPoint = this.getClosestPoint({ x: 357469.7, y: 4175482.52, z: -89.01 });
-        console.log('closestPoint:', closestPoint);
-        this.addPoint(closestPoint);
+        // const closestPoint = this.getClosestPoint({ x: 357469.7, y: 4175482.52, z: -89.01 });
+        // console.log('closestPoint:', closestPoint);
+        // this.addPoint(closestPoint);
     };
 
     gpsToUtm = (gpsData) => {
@@ -115,10 +116,6 @@ class TreeGPSUploadButtons extends React.Component {
         const { x: x1, y: y1 } = point1;
         const { x: x2, y: y2 } = point2;
         return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
-    }
-
-    addPointsOnPointCloud = (utmPoints) => {
-        // this.addPoints(utmPoints);
     }
 
     addPoints = (points) => points.map(point => this.addPoint(point));
