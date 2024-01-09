@@ -31,6 +31,8 @@ class TreeGPSUploadButtons extends React.Component {
                 this.addPoints(closestPoints);
             } catch (error) {
                 console.error("Error parsing JSON:", error);
+            } finally {
+                this.fileInputRef.current.value = null;
             }
         };
         reader.readAsText(file);
