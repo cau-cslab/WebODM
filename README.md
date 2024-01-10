@@ -1,5 +1,69 @@
 <img alt="WebODM" src="https://user-images.githubusercontent.com/1951843/34074943-8f057c3c-e287-11e7-924d-3ccafa60c43a.png" width="180">
 
+# 실행 방법(Ubuntu 22 - server)
+## 1. GPU 드라이버 설치
+```bash
+sudo ubuntu-drivers install --gpgpu
+```
+
+## 2. 도커, nvidia-container-toolkit 클린 설치 및 nvidia-smi 확인
+```bash
+# 이 스크립트를 한 흐름에 실행해야 함. 껐다 켜면 또 안됨... 왜인지는 모름
+sudo apt-get remove docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt-get remove -y nvidia-container-toolkit
+sudo apt-get autoremove
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+sudo sed -i -e '/experimental/ s/^#//g' /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+sudo apt-get update
+
+sudo apt-get install -y nvidia-container-toolkit
+
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+
+sudo docker run --rm --gpus all nvidia/cuda:12.2.2-base-ubuntu22.04 nvidia-smi
+```
+
+## 3. 서버 실행
+```bash
+# 기본
+sudo ./webodm.sh start
+
+# dev -> 이걸로 해야 개발한게 보임
+sudo ./webodm.sh start --dev
+
+# 기본 with GPU
+sudo ./webodm.sh start --gpu
+
+# dev with GPU -> 이걸로 해야 개발한게 보임
+sudo ./webodm.sh start --dev --gpu
+```
+
+# 이하는 기존 WebODM README
+
 ![Build Status](https://img.shields.io/github/actions/workflow/status/OpenDroneMap/WebODM/build-and-publish.yml?branch=master) ![Version](https://img.shields.io/github/v/release/OpenDroneMap/WebODM) [![Translated](https://hosted.weblate.org/widgets/webodm/-/svg-badge.svg)](https://hosted.weblate.org/engage/webodm/)
 
 A user-friendly, commercial grade software for drone image processing. Generate georeferenced maps, point clouds, elevation models and textured 3D models from aerial images. It supports multiple engines for processing, currently [ODM](https://github.com/OpenDroneMap/ODM) and [MicMac](https://github.com/OpenDroneMap/NodeMICMAC/).
