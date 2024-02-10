@@ -3,7 +3,7 @@
 # 실행 방법(Ubuntu 22 - server)
 ## 1. GPU 드라이버 설치
 ```bash
-sudo ubuntu-drivers install --gpgpu
+sudo ubuntu-drivers install
 ```
 
 ## 2. 도커, nvidia-container-toolkit 클린 설치 및 nvidia-smi 확인
