@@ -28,7 +28,7 @@ jobs:
       id: docker_meta
       uses: crazy-max/ghaction-docker-meta@v1
       with:
-        images: opendronemap/webodm_webapp
+        images: opendronemap/webodm_webapp:2.3.0
         tag-semver: |
           {{version}}
     - name: Build and push Docker image
@@ -41,6 +41,6 @@ jobs:
         no-cache: true
         tags: |
           ${{ steps.docker_meta.outputs.tags }}
-          opendronemap/webodm_webapp:latest
+          opendronemap/webodm_webapp:2.3.0
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
