@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "python manage.py test app.tests.test_generate_ui_mocks && jest",
-    "qtest": "jest"
+    "qtest": "jest",
+    "build": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
