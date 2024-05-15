@@ -61,7 +61,7 @@ class TreeGPSUploadButtons extends React.Component {
         const pointsBoxes = this.findPointsBoxesContaining(targetPoint);
         const points = this.getPointsInPointsBoxes(pointsBoxes);
         const distances = points.map(point => this.getDistance(point, targetPoint));
-        const minDistance = Math.min(...distances);
+        const minDistance = this.arrayMin(distances);
         const index = distances.indexOf(minDistance);
         return points[index];
     }
@@ -73,7 +73,7 @@ class TreeGPSUploadButtons extends React.Component {
                 min = arr[len];
         }
         return min;
-      };
+    };
 
     findPointsBoxesContaining = (point) => {
         const boxes = [];
